@@ -1,0 +1,7 @@
+venv/
+env/
+blogvenv/
+blogappvenv/
+__pycache__/
+*.pyc
+.env
