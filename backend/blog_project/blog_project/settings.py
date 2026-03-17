@@ -212,7 +212,7 @@ warnings.filterwarnings("ignore", category=UserWarning, message=".*MySQL does no
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    config("FRONTEND_URL"),  # React dev server
+    "https://django-react-blog-platform-1.onrender.com", # React dev server
 ]
 CORS_ALLOW_CREDENTIALS = True
 

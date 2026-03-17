@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 /* ==========================
    🌐 BASE URL CONFIG
 ========================== */
-const rawUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"; // fallback
+const rawUrl = import.meta.env.VITE_API_URL ; // fallback
 
 // Ensure exactly ONE slash between base and "api"
 const BASE_URL = rawUrl.replace(/\/+$/, "") + "/api";

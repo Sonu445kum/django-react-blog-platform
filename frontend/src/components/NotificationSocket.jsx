@@ -6,23 +6,33 @@ const NotificationSocket = ({ userId }) => {
   const socketRef = useRef(null);
   const reconnectInterval = useRef(null);
 
-  // ✅ WebSocket Connection Setup
+  // ✅ Get WebSocket URL from ENV
+  const WS_URL =
+    import.meta.env.VITE_WS_URL ||
+    "wss://django-react-blog-platform.onrender.com";
+
   useEffect(() => {
     if (!userId) return;
 
     const connectSocket = () => {
-      socketRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/notifications/${userId}/`);
+      // ✅ FIXED: Use production WebSocket URL
+      socketRef.current = new WebSocket(
+        `${WS_URL}/ws/notifications/${userId}/`
+      );
 
       socketRef.current.onopen = () => {
         console.log("✅ WebSocket connected");
-        if (reconnectInterval.current) clearInterval(reconnectInterval.current);
+        if (reconnectInterval.current) clearTimeout(reconnectInterval.current);
       };
 
       socketRef.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (data?.data) {
-            setNotifications((prev) => [data.data, ...prev.slice(0, 9)]); // keep max 10
+            setNotifications((prev) => [
+              data.data,
+              ...prev.slice(0, 9),
+            ]);
           }
         } catch (err) {
           console.error("❌ Invalid WebSocket data:", err);
@@ -31,7 +41,7 @@ const NotificationSocket = ({ userId }) => {
 
       socketRef.current.onclose = () => {
         console.log("⚠️ WebSocket closed, retrying...");
-        reconnectInterval.current = setTimeout(connectSocket, 3000); // retry after 3s
+        reconnectInterval.current = setTimeout(connectSocket, 3000);
       };
 
       socketRef.current.onerror = (error) => {
@@ -41,17 +51,18 @@ const NotificationSocket = ({ userId }) => {
     };
 
     connectSocket();
+
     return () => {
       if (socketRef.current) socketRef.current.close();
       if (reconnectInterval.current) clearTimeout(reconnectInterval.current);
     };
-  }, [userId]);
+  }, [userId, WS_URL]);
 
-  // ✅ Optional: Play sound when new notification arrives
+  // 🔔 Notification sound
   useEffect(() => {
     if (notifications.length > 0) {
-      const audio = new Audio("/notification.mp3"); // add a notification.mp3 in /public
-      audio.play().catch(() => {}); // ignore autoplay errors
+      const audio = new Audio("/notification.mp3");
+      audio.play().catch(() => {});
     }
   }, [notifications.length]);
 
@@ -86,7 +97,9 @@ const NotificationSocket = ({ userId }) => {
                 <p className="font-semibold text-purple-700">{n.title}</p>
                 <p className="text-sm text-gray-700">{n.message}</p>
                 {n.blog_id && (
-                  <p className="text-xs text-gray-400 mt-1">Blog ID: {n.blog_id}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Blog ID: {n.blog_id}
+                  </p>
                 )}
               </motion.div>
             ))

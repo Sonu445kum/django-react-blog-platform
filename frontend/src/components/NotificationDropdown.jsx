@@ -9,25 +9,36 @@ const NotificationDropdown = ({ userId }) => {
   const dropdownRef = useRef(null);
   const reconnectTimeout = useRef(null);
 
+  // ✅ Use ENV for WebSocket URL (fallback to production URL)
+  const WS_URL =
+    import.meta.env.VITE_WS_URL ||
+    "wss://django-react-blog-platform.onrender.com";
+
   // ✅ Connect WebSocket
   useEffect(() => {
     if (!userId) return;
 
     const connectSocket = () => {
-      socketRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/notifications/${userId}/`);
+      socketRef.current = new WebSocket(
+        `${WS_URL}/ws/notifications/${userId}/`
+      );
 
       socketRef.current.onopen = () => {
         console.log("✅ WebSocket connected");
-        if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current);
+        if (reconnectTimeout.current)
+          clearTimeout(reconnectTimeout.current);
       };
 
       socketRef.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (data?.data) {
-            setNotifications((prev) => [data.data, ...prev.slice(0, 9)]);
+            setNotifications((prev) => [
+              data.data,
+              ...prev.slice(0, 9),
+            ]);
 
-            // Optional sound
+            // 🔔 Play sound
             const audio = new Audio("/notification.mp3");
             audio.play().catch(() => {});
           }
@@ -48,11 +59,13 @@ const NotificationDropdown = ({ userId }) => {
     };
 
     connectSocket();
+
     return () => {
       if (socketRef.current) socketRef.current.close();
-      if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current);
+      if (reconnectTimeout.current)
+        clearTimeout(reconnectTimeout.current);
     };
-  }, [userId]);
+  }, [userId, WS_URL]);
 
   // ✅ Close dropdown on outside click
   useEffect(() => {
@@ -62,7 +75,8 @@ const NotificationDropdown = ({ userId }) => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const unreadCount = notifications.length;
@@ -93,7 +107,9 @@ const NotificationDropdown = ({ userId }) => {
             className="absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden"
           >
             <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="font-semibold text-gray-800 text-lg">🔔 Notifications</h3>
+              <h3 className="font-semibold text-gray-800 text-lg">
+                🔔 Notifications
+              </h3>
               <button
                 onClick={() => setNotifications([])}
                 className="text-xs text-purple-600 hover:underline"
@@ -117,10 +133,16 @@ const NotificationDropdown = ({ userId }) => {
                     transition={{ duration: 0.3 }}
                     className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                   >
-                    <p className="font-semibold text-purple-700">{n.title}</p>
-                    <p className="text-sm text-gray-700">{n.message}</p>
+                    <p className="font-semibold text-purple-700">
+                      {n.title}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      {n.message}
+                    </p>
                     {n.blog_id && (
-                      <p className="text-xs text-gray-400 mt-1">Blog ID: {n.blog_id}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Blog ID: {n.blog_id}
+                      </p>
                     )}
                   </motion.div>
                 ))
