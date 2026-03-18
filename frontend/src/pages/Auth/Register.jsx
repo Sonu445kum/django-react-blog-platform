@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useRegisterMutation } from "../../api/apiSlice";
@@ -15,7 +13,7 @@ export default function Register() {
     username: "",
     email: "",
     password: "",
-    password2: "", 
+    password2: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -45,20 +43,20 @@ export default function Register() {
       const res = await register(formData).unwrap();
 
       toast.success(
-        res?.message || "Registration successful! Check your email."
+        res?.message || "Registration successful! Check your email.",
       );
 
       navigate("/auth/login");
-
     } catch (err) {
       console.log("REGISTER ERROR:", err);
 
       const message =
+        err?.data?.detail ||
         err?.data?.error ||
         err?.data?.username?.[0] ||
         err?.data?.email?.[0] ||
         err?.data?.password?.[0] ||
-        JSON.stringify(err?.data) ||
+        err?.data?.password2?.[0] ||
         "Registration failed";
 
       toast.error(message);
@@ -71,7 +69,6 @@ export default function Register() {
     <>
       <div className="flex flex-col min-h-screen">
         <div className="flex-grow flex justify-center items-center relative">
-
           {/* Background */}
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -90,7 +87,6 @@ export default function Register() {
             </h2>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
               <input
                 type="text"
                 name="username"
