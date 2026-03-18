@@ -290,6 +290,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from taggit.serializers import TagListSerializerField, TaggitSerializer
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import Count
 
 from .models import (
@@ -312,29 +313,37 @@ class RegisterSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
-    #  Validate passwords match
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError({
                 "password": "Passwords do not match"
             })
 
-        # ✅ Django built-in password validation
-        validate_password(data['password'])
+        # ✅ SAFE password validation
+        try:
+            validate_password(data['password'])
+        except DjangoValidationError as e:
+            raise serializers.ValidationError({
+                "password": list(e.messages)
+            })
 
         return data
 
-    #  Create user safely
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email already exists")
+        return value
+
     def create(self, validated_data):
-        validated_data.pop('password2')  # remove confirm password
+        validated_data.pop('password2', None)  # ✅ SAFE POP
 
         user = CustomUser(
-            username=validated_data['username'],
-            email=validated_data['email'],
+            username=validated_data.get('username'),
+            email=validated_data.get('email'),
             role=validated_data.get('role', 'reader')
         )
 
-        user.set_password(validated_data['password'])
+        user.set_password(validated_data.get('password'))
         user.save()
 
         return user
