@@ -1,1 +1,1 @@
-web: cd blog_project && gunicorn blog_project.wsgi
+web: cd blog_project && daphne -b 0.0.0.0 -p $PORT blog_project.asgi:application
