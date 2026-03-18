@@ -1,31 +1,56 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const ReactionTest = () => {
+  const wsRef = useRef(null);
+
   useEffect(() => {
-    // WebSocket connection
-    const ws = new WebSocket("ws://127.0.0.1:8000/ws/reactions/");
+    const WS_URL = import.meta.env.VITE_WS_URL;
+
+    // Create WebSocket connection
+    const ws = new WebSocket(`${WS_URL}/ws/reactions/`);
+    wsRef.current = ws;
 
     ws.onopen = () => {
       console.log("✅ Connected to Django WebSocket");
-      ws.send(JSON.stringify({ message: "Hello Redis!" }));
+
+      ws.send(
+        JSON.stringify({
+          message: "Hello Redis!",
+        })
+      );
     };
 
     ws.onmessage = (event) => {
-      console.log("💬 Message from server:", event.data);
+      try {
+        const data = JSON.parse(event.data);
+        console.log("💬 Message from server:", data);
+      } catch (err) {
+        console.log("💬 Raw message:", event.data);
+      }
     };
 
-    ws.onclose = () => {
-      console.log("❌ WebSocket Disconnected");
+    ws.onerror = (error) => {
+      console.error("⚠️ WebSocket Error:", error);
     };
 
-    // cleanup on unmount
-    return () => ws.close();
+    ws.onclose = (event) => {
+      console.log("❌ WebSocket Disconnected", event.reason);
+    };
+
+    // Cleanup
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
   }, []);
 
   return (
     <div className="p-5 text-center">
-      <h2>🎯 Reaction WebSocket Test</h2>
-      <p>Check your browser console for messages!</p>
+      <h2 className="text-xl font-semibold">🎯 Reaction WebSocket Test</h2>
+      <p className="text-gray-600">
+        Check your browser console for WebSocket messages!
+      </p>
     </div>
   );
 };
