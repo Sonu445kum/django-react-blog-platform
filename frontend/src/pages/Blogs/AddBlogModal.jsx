@@ -28,7 +28,7 @@ const AddBlogModal = ({ onClose }) => {
     e.preventDefault();
 
     try {
-      // 🧩 STEP 1: Create Blog
+      //  STEP 1: Create Blog
       const blogRes = await createBlog({
         title: formData.title,
         content: formData.content,
@@ -39,7 +39,7 @@ const AddBlogModal = ({ onClose }) => {
       const blogId = blogRes.id;
       toast.success(" Blog created successfully!");
 
-      // 🧩 STEP 2: Upload Image if selected
+      //  STEP 2: Upload Image if selected
       if (file && blogId) {
         const uploadData = new FormData();
         uploadData.append("blog_id", blogId);

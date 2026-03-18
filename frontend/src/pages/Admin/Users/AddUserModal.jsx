@@ -21,7 +21,7 @@ const AddUserModal = ({ close }) => {
 
     try {
       await addUser({ username, email, role }).unwrap();
-      toast.success("User added successfully ✅");
+      toast.success("User added successfully ");
       refetch();
       close();
     } catch (err) {

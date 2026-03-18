@@ -200,7 +200,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // ✅ Validation
+  //  Validation
   const validate = () => {
     const errs = {};
 
@@ -218,7 +218,7 @@ export default function Login() {
     return Object.keys(errs).length === 0;
   };
 
-  // ✅ Submit Handler
+  //  Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -242,7 +242,7 @@ export default function Login() {
 
       const user = res?.user;
 
-      // ✅ Store token safely
+      //  Store token safely
       if (res?.tokens?.access) {
         localStorage.setItem("token", res.tokens.access);
       }
@@ -253,7 +253,7 @@ export default function Login() {
 
       toast.success("Login successful 🎉");
 
-      // ✅ Redirect
+      //  Redirect
       if (user?.is_admin) navigate("/admin/dashboard");
       else navigate("/blogs");
 

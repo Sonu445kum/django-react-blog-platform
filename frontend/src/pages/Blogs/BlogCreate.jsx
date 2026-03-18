@@ -201,7 +201,7 @@ const BlogCreate = () => {
   const [createBlog, { isLoading }] = useCreateBlogMutation();
   const [uploadMedia] = useUploadBlogMediaMutation();
 
-  // ✅ Fetch categories
+  //  Fetch categories
   const {
     data: categories = [],
     isLoading: catLoading,

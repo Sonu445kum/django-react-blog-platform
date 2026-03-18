@@ -11,12 +11,12 @@ import {
   useDeleteAdminNotificationMutation,
 } from "../../api/apiSlice";
 import { Loader2, CheckCircle, Trash2, Bell, RotateCcw } from "lucide-react";
-import Paginations from "../../components/Paginations"; // ✅ Pagination Component
+import Paginations from "../../components/Paginations"; 
 
 const NotificationsManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ✅ Fetch notifications with pagination
+  //  Fetch notifications with pagination
   const {
     data: notificationsData,
     isLoading,
@@ -28,7 +28,7 @@ const NotificationsManagement = () => {
   const [deleteNotification] = useDeleteAdminNotificationMutation();
   const [loadingId, setLoadingId] = useState(null);
 
-  // ✅ Extract results and pagination info
+  //  Extract results and pagination info
   const notifications = notificationsData?.results || [];
   const totalPages = notificationsData?.total_pages || 1;
 
@@ -88,7 +88,7 @@ const NotificationsManagement = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* ✅ Header Section */}
+      {/*  Header Section */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">
           🔔 Notifications Management
@@ -101,7 +101,7 @@ const NotificationsManagement = () => {
         </button>
       </div>
 
-      {/* ✅ Table Section */}
+      {/*  Table Section */}
       <div className="overflow-x-auto bg-white rounded-2xl shadow-xl">
         <table className="min-w-full border-collapse">
           <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
@@ -164,7 +164,7 @@ const NotificationsManagement = () => {
         </table>
       </div>
 
-      {/* ✅ Pagination */}
+      {/*  Pagination */}
       <div className="mt-6 flex justify-center">
         <Paginations
           currentPage={currentPage}

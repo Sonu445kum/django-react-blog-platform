@@ -402,11 +402,11 @@ import {
 import Paginations from "../../components/Paginations";
 
 const BlogsManagement = () => {
-  // ✅ State Management
+  //  State Management
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
 
-  // ✅ Fetch Admin Blogs (no search now)
+  //  Fetch Admin Blogs (no search now)
   const {
     data: blogsData,
     isLoading,
@@ -420,7 +420,7 @@ const BlogsManagement = () => {
   const blogs = blogsData?.results || [];
   const totalPages = blogsData?.total_pages || 1;
 
-  // ✅ Mutations
+  //  Mutations
   const [createBlog] = useCreateBlogMutation();
   const [updateBlog] = useUpdateBlogMutation();
   const [deleteBlog] = useDeleteBlogMutation();
@@ -429,7 +429,7 @@ const BlogsManagement = () => {
   const [approveBlog] = useApproveBlogMutation();
   const [flagBlog] = useFlagBlogMutation();
 
-  // ✅ UI States
+  //  UI States
   const [loadingBlogId, setLoadingBlogId] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
   const [selectedBlog, setSelectedBlog] = useState(null);
@@ -456,7 +456,7 @@ const BlogsManagement = () => {
     "Sports",
   ];
 
-  // ✅ Reset form after success
+  //  Reset form after success
   const resetForm = () => {
     setFormData({ title: "", content: "", category: "", tags: [], media: null });
     setPreviewImage(null);
@@ -466,7 +466,7 @@ const BlogsManagement = () => {
 
   
 
-  // ✅ Add Blog
+  //  Add Blog
   const handleAddBlog = async () => {
     if (!formData.title || !formData.content || !formData.category) {
       toast.error("Please fill all required fields!");
@@ -498,7 +498,7 @@ const BlogsManagement = () => {
     }
   };
 
-  // ✏️ Edit Blog
+  //  Edit Blog
   const handleEditBlog = async () => {
     try {
       const blogId = selectedBlog?.id;
@@ -529,7 +529,7 @@ const BlogsManagement = () => {
     }
   };
 
-  // ➕ Add Extra Content
+  //  Add Extra Content
   const handleAddToBlog = async () => {
     if (!extraContent.trim()) {
       toast.error("Enter content to add!");
@@ -545,7 +545,7 @@ const BlogsManagement = () => {
     }
   };
 
-  // 🗑️ Delete Blog
+  //  Delete Blog
   const handleDeleteBlog = async (id) => {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
     try {
@@ -557,7 +557,7 @@ const BlogsManagement = () => {
     }
   };
 
-  // ✅ Approve Blog
+  //  Approve Blog
   const handleApprove = async (blogId) => {
     try {
       setLoadingBlogId(blogId);
@@ -571,7 +571,7 @@ const BlogsManagement = () => {
     }
   };
 
-  // 🚩 Flag Blog
+  //  Flag Blog
   const handleFlag = async (blogId) => {
     try {
       setLoadingBlogId(blogId);
@@ -585,7 +585,7 @@ const BlogsManagement = () => {
     }
   };
 
-  // 🧩 Modal Layout
+  //  Modal Layout
   const Modal = ({ title, children, onClose }) => (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative animate-fadeIn max-h-[90vh] overflow-y-auto">
@@ -613,7 +613,7 @@ const BlogsManagement = () => {
       <div className="flex flex-wrap justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">Blogs Management</h1>
 
-        {/* 🔍 Filters (only status + refresh) */}
+        {/*  Filters (only status + refresh) */}
         <div className="flex flex-wrap gap-3">
           <select
             value={statusFilter}
@@ -632,7 +632,7 @@ const BlogsManagement = () => {
         </div>
       </div>
 
-      {/* 🧾 Blog Table */}
+      {/*  Blog Table */}
       <div className="overflow-x-auto rounded-xl shadow-lg bg-white">
         <table className="min-w-full">
           <thead className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
@@ -723,7 +723,7 @@ const BlogsManagement = () => {
         </table>
       </div>
 
-      {/* ✅ Pagination */}
+      {/*  Pagination */}
       <div className="mt-6 flex justify-center">
         <Paginations
           currentPage={currentPage}

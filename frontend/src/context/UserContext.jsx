@@ -25,21 +25,21 @@
 import React, { createContext, useState, useEffect } from "react";
 
 /**
- * ✅ Create a global context for user
+ *  Create a global context for user
  * This allows us to access user data in any component
  * without prop drilling.
  */
 export const UserContext = createContext();
 
 /**
- * ✅ UserProvider component wraps around the entire app
+ *  UserProvider component wraps around the entire app
  * so that all child components can access user context.
  */
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   /**
-   * ✅ Load user data from localStorage (e.g., after page refresh)
+   *  Load user data from localStorage (e.g., after page refresh)
    * When user logs in, we can store the info in localStorage.
    */
   useEffect(() => {
@@ -54,7 +54,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   /**
-   * ✅ Optionally: Whenever user changes, update localStorage
+   *  Optionally: Whenever user changes, update localStorage
    * This ensures data stays in sync between context and storage.
    */
   useEffect(() => {
@@ -66,7 +66,7 @@ export const UserProvider = ({ children }) => {
   }, [user]);
 
   /**
-   * ✅ Provide user and setUser function globally
+   *  Provide user and setUser function globally
    */
   return (
     <UserContext.Provider value={{ user, setUser }}>

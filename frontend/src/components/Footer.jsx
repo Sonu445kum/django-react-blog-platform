@@ -9,7 +9,7 @@ export default function Footer() {
     { icon: <FaTwitter />, url: "https://twitter.com/yourprofile", label: "Twitter" },
     { icon: <FaFacebookF />, url: "https://facebook.com/yourprofile", label: "Facebook" },
     { icon: <FaInstagram />, url: "https://instagram.com/yourprofile", label: "Instagram" },
-    { icon: <FaLinkedinIn />, url: "https://linkedin.com/in/yourprofile", label: "LinkedIn" },
+    { icon: <FaLinkedinIn />, url: "https://www.linkedin.com/in/sonu445kum/", label: "LinkedIn" },
     { icon: <FaGithub />, url: "https://github.com/Sonu445kum", label: "GitHub" },
   ];
 
