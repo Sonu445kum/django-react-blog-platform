@@ -29,7 +29,6 @@
 #         return user
 
 
-
 # class LoginSerializer(serializers.Serializer):
 #     username = serializers.CharField()
 #     password = serializers.CharField(write_only=True)
@@ -60,7 +59,6 @@
 
 #         attrs['user'] = user
 #         return attrs
-
 
 
 # # ====================================
@@ -243,8 +241,6 @@
 #         return None
 
 
-
-
 # # ====================================
 # # REACTION SERIALIZER
 # # ====================================
@@ -293,6 +289,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from taggit.serializers import TagListSerializerField, TaggitSerializer
+from django.contrib.auth.password_validation import validate_password
 from django.db.models import Count
 
 from .models import (
@@ -304,20 +301,42 @@ from .models import (
 # 🔹 AUTH & USER SERIALIZERS
 # ====================================
 
+
 class RegisterSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(write_only=True)
+
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'password', 'role']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'username', 'email', 'password', 'password2', 'role']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
+    #  Validate passwords match
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError({
+                "password": "Passwords do not match"
+            })
+
+        # ✅ Django built-in password validation
+        validate_password(data['password'])
+
+        return data
+
+    #  Create user safely
     def create(self, validated_data):
+        validated_data.pop('password2')  # remove confirm password
+
         user = CustomUser(
             username=validated_data['username'],
             email=validated_data['email'],
             role=validated_data.get('role', 'reader')
         )
+
         user.set_password(validated_data['password'])
         user.save()
+
         return user
 
 
@@ -330,22 +349,27 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
 
         if not username_or_email or not password:
-            raise serializers.ValidationError("Both username/email and password are required.")
+            raise serializers.ValidationError(
+                "Both username/email and password are required.")
 
         # Try username → then email
         user = authenticate(username=username_or_email, password=password)
         if user is None:
             try:
                 user_obj = CustomUser.objects.get(email=username_or_email)
-                user = authenticate(username=user_obj.username, password=password)
+                user = authenticate(
+                    username=user_obj.username, password=password)
             except CustomUser.DoesNotExist:
-                raise serializers.ValidationError("Invalid username/email or password.")
+                raise serializers.ValidationError(
+                    "Invalid username/email or password.")
 
         if not user:
-            raise serializers.ValidationError("Invalid username/email or password.")
+            raise serializers.ValidationError(
+                "Invalid username/email or password.")
 
         if not user.is_active:
-            raise serializers.ValidationError("Please verify your email before logging in.")
+            raise serializers.ValidationError(
+                "Please verify your email before logging in.")
 
         attrs['user'] = user
         return attrs
@@ -449,9 +473,11 @@ class BlogSerializer(TaggitSerializer, serializers.ModelSerializer):
         # Convert image/attachments to absolute URLs
         if request:
             if instance.featured_image:
-                data['featured_image'] = request.build_absolute_uri(instance.featured_image.url)
+                data['featured_image'] = request.build_absolute_uri(
+                    instance.featured_image.url)
             if instance.attachments:
-                data['attachments'] = request.build_absolute_uri(instance.attachments.url)
+                data['attachments'] = request.build_absolute_uri(
+                    instance.attachments.url)
         return data
 
     def get_total_reactions(self, obj):
@@ -503,7 +529,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'blog', 'content',  'parent', 'created_at', 'replies']
+        fields = ['id', 'user', 'blog', 'content',
+                  'parent', 'created_at', 'replies']
 
 
 # ====================================
@@ -530,7 +557,7 @@ class ReactionSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)   # receiver
-    sender = CustomUserSerializer(read_only=True) # sender
+    sender = CustomUserSerializer(read_only=True)  # sender
     blog = BlogMiniSerializer(read_only=True)
 
     class Meta:
