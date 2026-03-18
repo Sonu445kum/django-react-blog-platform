@@ -91,6 +91,7 @@ ASGI_APPLICATION = "blog_project.asgi.application"
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173")
 # Optional
 SITE_URL = FRONTEND_URL
+APPEND_SLASH = False
 
 
 
