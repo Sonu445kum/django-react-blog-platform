@@ -91,7 +91,7 @@ ASGI_APPLICATION = "blog_project.asgi.application"
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173")
 # Optional
 SITE_URL = FRONTEND_URL
-APPEND_SLASH = False
+
 
 
 
@@ -100,7 +100,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts":[config("REDIS_URL",default="redis://127.0.0.1:6379/1")]
+            "hosts":[config("REDIS_URL")]
         },
     },
 }
@@ -137,7 +137,7 @@ DATABASES = {
         ssl_require=True
     )
 }
-STATICFILES_DIRS = [os.path.join(BASE_DIR.parent, 'dist','assets')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR.parent, 'dist')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
