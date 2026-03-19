@@ -5,10 +5,14 @@ pip install -r requirements.txt
 
 echo "⚛️ Building frontend..."
 cd ../frontend
+
 npm install
 npm run build
 
-echo "📁 Moving back to backend..."
+echo "📁 Copying dist to backend..."
+cp -r dist ../backend/
+
+echo "🔙 Back to backend..."
 cd ../backend/blog_project
 
 echo "🗄️ Running migrations..."
