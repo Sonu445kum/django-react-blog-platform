@@ -5,14 +5,14 @@ from django.conf.urls.static import static
 from django.http import JsonResponse
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.views.generic import TemplateView
+from django.urls import re_path
+
 
 # Root API view
 def root_view(request):
     return JsonResponse({"message": "Welcome to the Blogging Platform API"})
 
 urlpatterns = [
-     # Root URL
-    path('', root_view, name='root'),
     # Django admin
     path('admin/', admin.site.urls),
 
@@ -29,6 +29,12 @@ urlpatterns = [
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
 # Serve media during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+#  MUST BE LAST
+urlpatterns += [
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+]
